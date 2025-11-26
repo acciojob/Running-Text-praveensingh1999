@@ -1,29 +1,35 @@
-//your JS code here. If required.
 const textElement = document.getElementById("text");
 const speedInput = document.getElementById("speed");
+
 const message = "We love Programming!";
+let index = 0;
+let intervalId = null;
 
 function startRendering() {
-    const speed = parseInt(speedInput.value);
-    if (speed < 1 || speed > 10) {
-        alert("Please enter a number between 1 and 10.");
-        return;
-    }
+    // if no speed given, default is 1
+    let speed = parseInt(speedInput.value) || 1;
 
+    // convert speed to delay
     const delay = 500 / speed;
-    textElement.innerHTML = "";  // FIXED
-    let index = 0;
 
-    function renderedCharacter() {
-        if (index < message.length) {
-            textElement.innerHTML += message[index];
-            index++;
-            setTimeout(renderedCharacter, delay);
+    // clear previous interval
+    if (intervalId) clearInterval(intervalId);
+
+    textElement.innerHTML = "";
+    index = 0;
+
+    intervalId = setInterval(() => {
+        textElement.innerHTML += message[index];
+        index++;
+
+        if (index === message.length) {
+            clearInterval(intervalId);
         }
-    }
-
-    renderedCharacter();
+    }, delay);
 }
 
-// FIXED
+// Start typing immediately on page load
+startRendering();
+
+// Restart typing whenever speed changes
 speedInput.addEventListener("input", startRendering);
